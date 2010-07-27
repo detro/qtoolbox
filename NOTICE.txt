@@ -1,0 +1,3 @@
+qtoolbox
+Copyright 2010 Luca COLANTONIO and Ivan DE MARINO
+
