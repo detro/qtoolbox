@@ -1,6 +1,6 @@
 # Description
 
-qtoolbox is a set of tools for everyday Qt development. A "swiss army knife".
+qtoolbox is a set of tools for everyday [Qt](http://qt.nokia.com) development. A "swiss army knife".
 Designed to be minimalistic, does "just what promised, nothing more".
 
 Every "tool" comes with test code, that works also as example code.
