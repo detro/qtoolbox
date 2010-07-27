@@ -17,6 +17,12 @@ If required, tools should provide a README file written in Markdown language ([M
 * PAC file loader (todo)
 
 
+# Usage
+
+Every tool will be sitting in a separate subdirectory.
+A `".pri"` file will be provided, to make it easy to include it within your project. It's not a separate library, just a set of headers/classes.
+In addition, a `"test"` subdirectory will contain a test/example application.
+
 # Main Developers/Authors
 
 * Luca Colantonio (http://github.com/lucabox)
