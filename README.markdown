@@ -5,7 +5,7 @@ Designed to be minimalistic, does "just what promised, nothing more".
 
 Every "tool" comes with test code, that works also as example code.
 
-If required, tools should provide a README file written in Markdown language ([on Wikipedia](http://en.wikipedia.org/wiki/Markdown), [on official webpage(http://daringfireball.net/projects/markdown/)).
+If required, tools should provide a README file written in Markdown language ([Markdown webpage](http://daringfireball.net/projects/markdown/), [on Wikipedia](http://en.wikipedia.org/wiki/Markdown)).
 
 
 # Tools
