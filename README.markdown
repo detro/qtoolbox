@@ -25,5 +25,5 @@ In addition, a `"test"` subdirectory will contain a test/example application.
 
 # Main Developers/Authors
 
-* Luca Colantonio (http://github.com/lucabox)
-* Ivan De Marino (http://github.com/detro)
+* Luca Colantonio ([github.com/lucabox](http://github.com/lucabox))
+* Ivan De Marino ([github.com/detro](http://github.com/detro))
