@@ -29,7 +29,7 @@
 
 QTB_BEGIN_NAMESPACE
 
-      /**
+/**
    @class SqliteDbHelper
    @brief Simplify Sqlite Database versioning during a project life-cycle.
 
