@@ -27,7 +27,11 @@ CONFIG   -= app_bundle
 TEMPLATE = app
 
 
-SOURCES += tst_SqlitedbhelperTest.cpp
+SOURCES += tst_SqlitedbhelperTest.cpp \
+    SqliteDbHelperExample.cpp
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
 include(../sqlitedbhelper.pri)
+
+HEADERS += \
+    SqliteDbHelperExample.h
