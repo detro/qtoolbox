@@ -2,8 +2,10 @@ QT += \
     core \
     sql
 
+include(../common/common.pri)
+
 SOURCES += \
-    $$PWD/src/SqliteDbHelper.cpp
+    $$PWD/SqliteDbHelper.cpp
 
 HEADERS += \
-    $$PWD/include/SqliteDbHelper.h
+    $$PWD/SqliteDbHelper.h

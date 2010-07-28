@@ -4,7 +4,13 @@
 #include <QString>
 #include <QSqlDatabase>
 
-/** This class purpose is to simplify Sqlite Database Updates.
+#include "macros.h"
+
+QTB_BEGIN_NAMESPACE
+
+/**
+   @class SqliteDbHelper
+   @brief Simplify Sqlite Database versioning during a project life-cycle.
 
    It works as a Super-class for other, more specific DbHelpers.
    What it "helps" to do, is to handle the versioning of the database in
@@ -34,7 +40,8 @@ public:
    /**
      Opens a new QSqlDatabase connection, with a new Connection Name.
      The receiver takes responsibility of the connection.
-     The method is NOT Thread-Safe
+     The method is NOT Thread-Safe: this means that you should use it if you want a extra
+     connection withing the same thread.
 
      @param alternativeConnName Alternative/New Connection Name
    */
@@ -50,13 +57,16 @@ protected:
 private:
    void setDbVersion(const int version);
    int dbVersion();
-   void checkIsCreated();
+   void createIfNecessary();
    void dropTables();
+   void logDriverFeatures();
 
 private:
    QSqlDatabase  m_database;
    int           m_currVersion;
    bool          m_created;
 };
+
+QTB_END_NAMESPACE
 
 #endif // SQLITEDBHELPER_H
