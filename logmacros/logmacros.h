@@ -20,7 +20,7 @@
 #ifndef LOGMACROS_H
 #define LOGMACROS_H
 
-//< Put "DEFINES += ENABLE_LOG" in your .pro/.pri file to enable Logging.
+//< Put "DEFINES += ENABLE_LOG_MACROS" in your .pro/.pri file to enable Logging.
 #if defined(ENABLE_LOG_MACROS) && defined(ENABLE_FILE_LOG)
     #include <qDebug>
     #define DEBUG_TAG(tag, exp) qDebug() << "("<< __FILE__ << ":" << __LINE__ << ")" << \
