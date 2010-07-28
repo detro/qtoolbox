@@ -1,3 +1,22 @@
+/**
+* Licensed to the Apache Software Foundation (ASF) under one
+* or more contributor license agreements.  See the NOTICE.txt
+* file distributed with this work for additional information
+* regarding copyright ownership.  The ASF licenses this file
+* to you under the Apache License, Version 2.0 (the
+* "License"); you may not use this file except in compliance
+* with the License.  You may obtain a copy of the License at
+*
+*   http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+* KIND, either express or implied.  See the License for the
+* specific language governing permissions and limitations
+* under the License.
+*/
+
 #include "SqliteDbHelper.h"
 
 #include <QSqlQuery>
@@ -17,21 +36,21 @@ QTB_BEGIN_NAMESPACE
 #define INFO_TABLE_INSERT_VERSION   "INSERT INTO _db_helper_info_ (version) VALUES (?)"
 #define INFO_TABLE_SELECT_VERSION   "SELECT version FROM _db_helper_info_"
 
-SqliteDbHelper::SqliteDbHelper(const QString &filePath, const int version, const QString &defaultConnName) :
+SqliteDbHelper::SqliteDbHelper(const QString &filePath, const int requestedVersion, const QString &defaultConnName) :
       m_currVersion(VERSION_UNAVAILABLE),
       m_created(true)
 {
    m_database = QSqlDatabase::addDatabase(SQLITE_DRIVER_NAME, defaultConnName);
    m_database.setDatabaseName(filePath);
    if ( m_database.isValid() && m_database.open() ) {
-      if ( dbVersion() == VERSION_UNAVAILABLE ) {
+      if ( version() == VERSION_UNAVAILABLE ) {
          DEBUG("Creating DB: " << m_database.databaseName());
-         setDbVersion(version);     //< Set the DB version
+         setVersion(requestedVersion);     //< Set the DB version
          m_created = false;
-      } else if ( dbVersion() != version ) {
-         DEBUG("Updating DB: " << m_database.databaseName() << " - From version " << dbVersion() << " to version " << version);
+      } else if ( version() != requestedVersion ) {
+         DEBUG("Updating DB: " << m_database.databaseName() << " - From version " << version() << " to version " << requestedVersion);
          dropTables();              //< Drop all the old-version Tables
-         setDbVersion(version);     //< Set the DB version
+         setVersion(requestedVersion);     //< Set the DB version
          m_created = false;
       }
       DEBUG("DB: " << m_database.databaseName() << " is now Ready!");
@@ -49,40 +68,40 @@ SqliteDbHelper::~SqliteDbHelper() {
 
 // public:
 QSqlDatabase SqliteDbHelper::open() {
-   checkIsCreated();                   //< Create the DB tables if not already there
+   createIfNecessary();                   //< Create the DB tables if not already there
    return m_database;
 }
 
 QSqlDatabase SqliteDbHelper::open(const QString &alternativeConnName) {
-   checkIsCreated();                   //< Create the DB tables if not already there
+   createIfNecessary();                   //< Create the DB tables if not already there
    QSqlDatabase newConn = QSqlDatabase::database(alternativeConnName, true);
    if ( !newConn.isValid() ) {
       newConn = QSqlDatabase::addDatabase(SQLITE_DRIVER_NAME, alternativeConnName);
       newConn.setDatabaseName(m_database.databaseName());
       if ( !newConn.isValid() || !newConn.open() ) {
-         WARNING("Couldn't open a Connection with Alternative Name: " << alternativeConnName");
+         WARNING("Couldn't open a Connection with Alternative Name: " << alternativeConnName);
       }
    }
    return newConn;
 }
 
 // private:
-void SqliteDbHelper::setDbVersion(const int version) {
+void SqliteDbHelper::setVersion(const int newVersion) {
    m_database.transaction();           //< TRANSACTION START
    QSqlQuery query(m_database);
    query.exec(INFO_TABLE_CREATE);
    query.prepare(INFO_TABLE_INSERT_VERSION);
-   query.bindValue(0, version);
+   query.bindValue(0, newVersion);
    query.exec();
 
    if ( !m_database.commit() ) {       //< TRANSACTION COMMIT
       WARNING("Couldn't add the _db_helper_info_ table - Error: " << query.lastError().text());
    } else {
-      m_currVersion = version;
+      m_currVersion = newVersion;
    }
 }
 
-int SqliteDbHelper::dbVersion() {
+int SqliteDbHelper::version() {
    if ( m_currVersion == VERSION_UNAVAILABLE ) {
       QSqlQuery query(m_database);
       if ( query.exec(INFO_TABLE_SELECT_VERSION) ) { //< Try to query for Curr. Version
@@ -102,7 +121,7 @@ int SqliteDbHelper::dbVersion() {
    return m_currVersion;
 }
 
-void SqliteDbHelper::checkIsCreated() {
+void SqliteDbHelper::createIfNecessary() {
    if ( !m_created ) {
       onCreate(m_database);
       m_created = true;
