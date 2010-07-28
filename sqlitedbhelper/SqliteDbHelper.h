@@ -55,8 +55,8 @@ protected:
    virtual void onCreate(QSqlDatabase &database) = 0;
 
 private:
-   void setDbVersion(const int version);
-   int dbVersion();
+   void setVersion(const int version);
+   int version();
    void createIfNecessary();
    void dropTables();
    void logDriverFeatures();
