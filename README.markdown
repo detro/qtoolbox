@@ -10,11 +10,18 @@ If required, tools should provide a README file written in Markdown language ([M
 
 # Tools
 
-* Debugging Macros (todo)
-* Worker Thread (todo)
-* Google Maps Widget (todo)
-* SQLite Helper (todo)
-* PAC file loader (todo)
+## Sqlite DB Helper
+Simplify Sqlite Database versioning during a project life-cycle.
+It works as a Super-class for other, more specific DbHelpers.
+What it "helps" to do, is to handle the versioning of the database in
+a simple and clean manner: if you ask for a version of DB that is higher
+then the current one, it deletes the current one and creates the new one,
+before returning an open connection to the DB.
+
+## Debugging Macros (TODO)
+## Worker Thread (TODO)
+## Google Maps Widget (TODO)
+## PAC file loader (TODO)
 
 
 # Usage
