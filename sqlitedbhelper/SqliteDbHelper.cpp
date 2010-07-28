@@ -37,11 +37,16 @@ QTB_BEGIN_NAMESPACE
 #define INFO_TABLE_SELECT_VERSION   "SELECT version FROM _db_helper_info_"
 
 SqliteDbHelper::SqliteDbHelper(const QString &filePath, const int requestedVersion, const QString &defaultConnName) :
+      m_databaseFilepath(filePath),
       m_currVersion(VERSION_UNAVAILABLE),
       m_created(true)
 {
-   m_database = QSqlDatabase::addDatabase(SQLITE_DRIVER_NAME, defaultConnName);
-   m_database.setDatabaseName(filePath);
+   if ( QSqlDatabase::contains(defaultConnName) ) {
+      m_database = QSqlDatabase::database(defaultConnName);
+   } else {
+      m_database = QSqlDatabase::addDatabase(SQLITE_DRIVER_NAME, defaultConnName);
+   }
+   m_database.setDatabaseName(m_databaseFilepath);
    if ( m_database.isValid() && m_database.open() ) {
       if ( version() == VERSION_UNAVAILABLE ) {
          DEBUG("Creating DB: " << m_database.databaseName());
@@ -62,8 +67,7 @@ SqliteDbHelper::SqliteDbHelper(const QString &filePath, const int requestedVersi
 }
 
 SqliteDbHelper::~SqliteDbHelper() {
-   if ( m_database.isOpen() )
-      m_database.close();
+   closeIfOpen();
 }
 
 // public:
@@ -83,6 +87,18 @@ QSqlDatabase SqliteDbHelper::open(const QString &alternativeConnName) {
       }
    }
    return newConn;
+}
+
+bool SqliteDbHelper::isValid() {
+   return m_database.isValid();
+}
+
+void SqliteDbHelper::destroy() {
+   closeIfOpen();
+   if ( QFile::exists(m_databaseFilepath) ) {
+      DEBUG("Removing Database at: " << m_databaseFilepath);
+      QFile::remove(m_databaseFilepath);
+   }
 }
 
 // private:
@@ -161,6 +177,15 @@ void SqliteDbHelper::logDriverFeatures() {
    VERBOSE_TAG("SQL Driver Config", "Support EventNotifications? " << m_database.driver()->hasFeature(QSqlDriver::EventNotifications));
    VERBOSE_TAG("SQL Driver Config", "Support FinishQuery? " << m_database.driver()->hasFeature(QSqlDriver::FinishQuery));
    VERBOSE_TAG("SQL Driver Config", "Support MultipleResultSets? " << m_database.driver()->hasFeature(QSqlDriver::MultipleResultSets));
+}
+
+void SqliteDbHelper::closeIfOpen() {
+   if ( m_database.isOpen() ) {
+      DEBUG("Closing Database");
+      m_database.close();
+      DEBUG("Removing Database Connection Name: " << m_database.connectionName());
+      m_database.removeDatabase(m_database.connectionName());
+   }
 }
 
 QTB_END_NAMESPACE

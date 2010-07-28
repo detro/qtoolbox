@@ -22,12 +22,14 @@
 
 #include <QString>
 #include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlError>
 
 #include "macros.h"
 
 QTB_BEGIN_NAMESPACE
 
-/**
+      /**
    @class SqliteDbHelper
    @brief Simplify Sqlite Database versioning during a project life-cycle.
 
@@ -44,7 +46,7 @@ QTB_BEGIN_NAMESPACE
    per-thread. Also, to avoid QSqlDatabase Connection collisions, every instance will have to use
    a different "Connection Name". Use the "defaultConnName" only in one thread.
 */
-class SqliteDbHelper
+      class SqliteDbHelper
 {
 public:
    SqliteDbHelper(const QString &filePath, const int requestedVersion, const QString &defaultConnName = QString());
@@ -66,6 +68,21 @@ public:
    */
    QSqlDatabase open(const QString &alternativeConnName);
 
+   /**
+     Checks the validity of the helper and of the inner DB Connection.
+     This should be used to check that everything was created correctly and that the Connection is ready to be used.
+   */
+   bool isValid();
+
+   /**
+     Destroy the Database from the filesystem, if possible.
+
+     Depends on the nature of the backend: some do not expose
+     direct access to the Database file, therefore it's impossible to
+     destroy it.
+   */
+   void destroy();
+
 protected:
    /**
      Subclasses have to implement this method to create their specific Tables.
@@ -79,11 +96,13 @@ private:
    void createIfNecessary();
    void dropTables();
    void logDriverFeatures();
+   void closeIfOpen();
 
 private:
-   QSqlDatabase  m_database;
-   int           m_currVersion;
-   bool          m_created;
+   QSqlDatabase   m_database;
+   QString        m_databaseFilepath;
+   int            m_currVersion;
+   bool           m_created;
 };
 
 QTB_END_NAMESPACE
