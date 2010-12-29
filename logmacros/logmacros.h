@@ -20,63 +20,120 @@
 #ifndef LOGMACROS_H
 #define LOGMACROS_H
 
-//< Put "DEFINES += ENABLE_LOG_MACROS" in your .pro/.pri file to enable Logging.
-#if defined(ENABLE_LOG_MACROS) && defined(ENABLE_FILE_LOG)
+#define FILE_AND_LINE_INFO __FILE__ << ":" << __LINE__
+#define TAG(tag) "[" << tag << "]"
+#define EXP(exp) exp
+
+#define ENTER_TAG TAG("enter")
+#define EXIT_TAG TAG("exit")
+
+#if defined(ENABLE_LOG_MACROS)
     #include <qDebug>
-    #define DEBUG_TAG(tag, exp) qDebug() << "("<< __FILE__ << ":" << __LINE__ << ")" << \
-                                            "(" << tag << ")" << \
-                                            "(" << exp << ")"
+    #include <QThread>
+    #define CURRENT_THREAD "Thread ("<< QThread::currentThreadId () << ")"
 
-    #define DEBUG(exp)         qDebug() << "("<< __FILE__ << ":" << __LINE__ << ")" << \
-                                            "(" << exp << ")"
+#if defined(DEBUG_LEVEL_ACTIVE)
+    #define DEBUG_TAG(tag, exp) qDebug() << TAG(FILE_AND_LINE_INFO) << \
+                                            TAG("d") << \
+                                            TAG(CURRENT_THREAD) << \
+                                            TAG(tag) << \
+                                            EXP(exp)
 
-    #define CRITICAL_TAG(tag, exp) qCritical() << "("<< __FILE__ << ":" << __LINE__ << ")" << \
-                                                    "(" << tag << ")" << \
-                                                    "(" << exp << ")"
-
-    #define CRITICAL(exp) qCritical() << "("<< __FILE__ << ":" << __LINE__ << ")" << \
-                                            "(" << exp << ")"
-
-    #define WARNING_TAG(tag, exp) qWarning() << "("<< __FILE__ << ":" << __LINE__ << ")" << \
-                                                    "(" << tag << ")" << \
-                                                    "(" << exp << ")"
-
-    #define WARNING(exp) qWarning() << "("<< __FILE__ << ":" << __LINE__ << ")" << \
-                                        "(" << exp << ")"
-
+    #define DEBUG(exp)         qDebug() << TAG(FILE_AND_LINE_INFO) << \
+                                            TAG("d") << \
+                                            TAG(CURRENT_THREAD) << \
+                                            EXP(exp)
     // common debugs:
-    #define DEBUG_ENTER_FN() qDebug() << "("<< __FILE__ << ":" << __LINE__ << ")" << \
-                                            "( enter )" << \
-                                            "(" << __FUNCTION__ << ")"
+    #define DEBUG_ENTER_FN() qDebug() << TAG(FILE_AND_LINE_INFO) << \
+                                            TAG("d") << \
+                                            TAG(CURRENT_THREAD) << \
+                                            ENTER_TAG << \
+                                            __FUNCTION__
 
-    #define DEBUG_EXIT_FN() qDebug() << "("<< __FILE__ << ":" << __LINE__ << ")" << \
-                                            "( exit )" << \
-                                            "(" << __FUNCTION__ << ")"
+    #define DEBUG_EXIT_FN() qDebug() << TAG(FILE_AND_LINE_INFO) << \
+                                            TAG("d") << \
+                                            TAG(CURRENT_THREAD) << \
+                                            EXIT_TAG << \
+                                            __FUNCTION__
+
 #else
     #define DEBUG_TAG(tag, exp)
     #define DEBUG(exp)
-
-    #define CRITICAL_TAG(tag, exp)
-    #define CRITICAL(exp)
-
-    #define WARNING_TAG(tag, exp)
-    #define WARNING(exp)
-
-    // common debugs:
     #define DEBUG_ENTER_FN()
     #define DEBUG_EXIT_FN()
-#endif // ENABLE_LOG_MACROS && ENABLE_FILE_LOG
+#endif
 
-#if defined(ENABLE_LOG_MACROS) && defined(ENABLE_FILE_LOG) && defined(ENABLE_LOG_MACROS_VERBOSE)
-    #define VERBOSE_TAG(tag, exp) qDebug() << "("<< __FILE__ << ":" << __LINE__ << ")" << \
-                                                "(" << tag << ")" << \
-                                                "(" << exp << ")"
+#if defined(CRITICAL_LEVEL_ACTIVE)
+    #define CRITICAL_TAG(tag, exp) qCritical() << TAG(FILE_AND_LINE_INFO) << \
+                                                    TAG("c") << \
+                                                    TAG(CURRENT_THREAD) << \
+                                                    TAG(tag) << \
+                                                    EXP(exp)
 
-    #define VERBOSE(exp) qDebug() << "("<< __FILE__ << ":" << __LINE__ << ")" << \
-                                        "(" << exp << ")"
+    #define CRITICAL(exp) qCritical() << TAG(FILE_AND_LINE_INFO) << \
+                                            TAG("c") << \
+                                            TAG(CURRENT_THREAD) << \
+                                            EXP(exp)
+#else
+    #define CRITICAL_TAG(tag, exp)
+    #define CRITICAL(exp)
+#endif
+
+#if defined(WARNING_LEVEL_ACTIVE)
+    #define WARNING_TAG(tag, exp) qWarning() << TAG(FILE_AND_LINE_INFO) << \
+                                                    TAG("w") << \
+                                                    TAG(CURRENT_THREAD) << \
+                                                    TAG(tag) << \
+                                                    EXP(exp)
+
+    #define WARNING(exp) qWarning() << TAG(FILE_AND_LINE_INFO) << \
+                                        TAG("w") << \
+                                        TAG(CURRENT_THREAD) << \
+                                        EXP(exp)
+#else
+    #define WARNING_TAG(tag, exp)
+    #define WARNING(exp)
+#endif
+
+#else
+    #define DEBUG_TAG(tag, exp)
+    #define DEBUG(exp)
+    #define CRITICAL_TAG(tag, exp)
+    #define CRITICAL(exp)
+    #define WARNING_TAG(tag, exp)
+    #define WARNING(exp)
+    #define DEBUG_ENTER_FN()
+    #define DEBUG_EXIT_FN()
+#endif // ENABLE_LOG_MACROS
+#if defined(ENABLE_LOG_MACROS) && defined(ENABLE_LOGS_VERBOSE)
+    #define VERBOSE_TAG(tag, exp) qDebug() << TAG(FILE_AND_LINE_INFO) << \
+                                                TAG("v") << \
+                                                TAG(CURRENT_THREAD) << \
+                                                TAG(tag) << \
+                                                EXP(exp)
+
+    #define VERBOSE(exp) qDebug() << TAG(FILE_AND_LINE_INFO) << \
+                                        TAG("v") << \
+                                        TAG(CURRENT_THREAD) << \
+                                        EXP(exp)
+    // common debugs:
+    #define VERBOSE_ENTER_FN() qDebug() << TAG(FILE_AND_LINE_INFO) << \
+                                            TAG("v") << \
+                                            TAG(CURRENT_THREAD) << \
+                                            ENTER_TAG << \
+                                            __FUNCTION__
+
+    #define VERBOSE_EXIT_FN() qDebug() << TAG(FILE_AND_LINE_INFO) << \
+                                            TAG("v") << \
+                                            TAG(CURRENT_THREAD) << \
+                                            EXIT_TAG << \
+                                            __FUNCTION__
 #else
     #define VERBOSE_TAG(tag, exp)
     #define VERBOSE(exp)
-#endif // ENABLE_LOG_MACROS && ENABLE_FILE_LOG && ENABLE_LOG_MACROS_VERBOSE
+    #define VERBOSE_ENTER_FN()
+    #define VERBOSE_EXIT_FN()
+#endif // ENABLE_LOG_MACROS && ENABLE_LOG_VERBOSE
 
 #endif // LOGMACROS_H
+
