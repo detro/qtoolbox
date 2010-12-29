@@ -34,4 +34,5 @@ DEFINES += SRCDIR=\\\"$$PWD/\\\"
 include(../sqlitedbhelper.pri)
 
 HEADERS += \
+    activelogs.h \
     SqliteDbHelperExample.h

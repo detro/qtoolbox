@@ -2,6 +2,12 @@
 
 #include "macros.h"
 
+#include "activelogs.h"
+#ifdef SQLITE_DB_HELPER_EXAMPLE
+    #define ENABLE_LOG_MACROS
+#endif
+#include "logmacros.h"
+
 SqliteDbHelperExample::SqliteDbHelperExample(const int requestedVersion)
    : SqliteDbHelper(DB_NAME, requestedVersion)
 {

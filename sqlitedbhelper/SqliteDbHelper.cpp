@@ -26,6 +26,13 @@
 #include <QSqlDriver>
 #include <QStringList>
 
+#include "activelogs.h"
+#ifdef SQLITE_DB_HELPER
+    #define ENABLE_LOG_MACROS
+#endif
+#include "logmacros.h"
+
+
 QTB_BEGIN_NAMESPACE
 
 #define SQLITE_DRIVER_NAME          "QSQLITE"

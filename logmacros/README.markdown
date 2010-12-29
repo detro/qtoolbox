@@ -16,7 +16,7 @@ Include the logmacros.pri in your project pro file. This will include the follow
 # How to use the logs macros
 
 Create a file called activelogs.h, I suggest in the same directory as your pro file, and add it to your project.
-Copy the following content in it:
+Copy the following content in it (or just take the one you find in the same directory as this file):
 
 	#ifndef ACTIVE_LOGS_H
 	#define ACTIVE_LOGS_H

@@ -17,8 +17,23 @@
 * under the License.
 */
 
-/** Namespace Macro: begin. */
-#define QTB_BEGIN_NAMESPACE namespace QTB {
-/** Namespace Macro: end. */
-#define QTB_END_NAMESPACE }
+#ifndef ACTIVE_LOGS_H
+#define ACTIVE_LOGS_H
 
+// comment/uncomment these to disable/enable the logs
+#define ENABLE_LOGS
+#define ENABLE_LOGS_VERBOSE
+
+#ifdef ENABLE_LOGS
+        // comment/uncomment these to disable/enable debug/warning/critical level logs
+        #define DEBUG_LEVEL_ACTIVE
+        #define WARNING_LEVEL_ACTIVE
+        #define CRITICAL_LEVEL_ACTIVE
+
+
+        #define SQLITE_DB_HELPER
+
+        #define SQLITE_DB_HELPER_EXAMPLE
+
+#endif // ENABLE_LOGS
+#endif // ACTIVE_LOGS_H

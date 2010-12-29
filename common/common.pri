@@ -21,4 +21,6 @@ QT += core
 
 INCLUDEPATH += $$PWD
 
+include($$PWD/../logmacros/logmacros.pri)
+
 HEADERS += $$PWD/macros.h
