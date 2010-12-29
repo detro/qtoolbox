@@ -18,7 +18,14 @@ a simple and clean manner: if you ask for a version of DB that is higher
 then the current one, it deletes the current one and creates the new one,
 before returning an open connection to the DB.
 
-## Debugging Macros (TODO)
+## Logging Macros
+A set of logging macros. The rationale behind is to have the possibility to control all log macros (and level/verbosity)
+from one file and at compile time.
+Having just a release/debug mode such as qDebug() might not be enough since the more the project grows the more
+clutter there is in the log file; with these macro, and a bit of housekeeping,
+it is possible to decide which class is allowed to generate macros
+(with no runtime check, everything is done at compile time).
+
 ## Worker Thread (TODO)
 ## Google Maps Widget (TODO)
 ## PAC file loader (TODO)
