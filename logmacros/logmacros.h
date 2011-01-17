@@ -28,7 +28,7 @@
 #define EXIT_TAG TAG("exit")
 
 #if defined(ENABLE_LOG_MACROS)
-    #include <qDebug>
+    #include <QDebug>
     #include <QThread>
     #define CURRENT_THREAD "Thread ("<< QThread::currentThreadId () << ")"
 
